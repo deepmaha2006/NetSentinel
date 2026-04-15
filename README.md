@@ -1,123 +1,180 @@
-# NetSentinel 🛡️
+# NetSentinel — Async TCP Port Scanner
 
-<div align="center">
+```
+ _   _      _   ____            _   _            _
+| \ | | ___| |_/ ___|  ___ _ __ | |_(_)_ __   ___| |
+|  \| |/ _ \ __\___ \ / _ \ '_ \| __| | '_ \ / _ \ |
+| |\  |  __/ |_ ___) |  __/ | | | |_| | | | |  __/ |
+|_| \_|\___|\__|____/ \___|_| |_|\__|_|_| |_|\___|_|
+```
 
-![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Security](https://img.shields.io/badge/Category-Cybersecurity-red?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-557C94?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
+[![C++20](https://img.shields.io/badge/C++-20-00599C?style=flat&logo=cplusplus)](https://isocpp.org)
+[![CMake](https://img.shields.io/badge/CMake-3.15+-064F8C?style=flat&logo=cmake)](https://cmake.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-blue)](https://github.com/deepmaha2006/NetSentinel)
 
-**A fast, multi-threaded network vulnerability scanner with automated report generation**
-
-</div>
+> Asynchronous TCP port scanner built with **C++20** and **Boost.Asio** for high-concurrency network reconnaissance and service fingerprinting.
 
 ---
 
-## 🔍 What is NetSentinel?
+## What It Does
 
-NetSentinel is a Python-based network vulnerability scanner designed for penetration testers and security auditors. It rapidly scans target hosts for open ports, identifies running services through banner grabbing, correlates findings against known CVEs, and produces professional vulnerability reports.
+| Feature | Details |
+|---|---|
+| 🚀 **Async Scanning** | Uses Boost.Asio strand for concurrent, non-blocking port probing |
+| 🔍 **State Detection** | Identifies OPEN, CLOSED, and FILTERED port states |
+| 📡 **Banner Grabbing** | Reads initial service responses for version fingerprinting |
+| 🗺️ **Service Mapping** | Maps 40+ well-known ports to service names |
+| ⏱️ **Timeout Control** | Configurable timeout to detect firewall-filtered ports |
+| 🎛️ **Concurrency Control** | Adjustable thread countBalances speed vs. stealth |
 
-## ✨ Features
+---
 
-- **⚡ Fast Multi-threaded Scanning** — Configurable thread pool for speed
-- **🔎 Banner Grabbing** — Identify exact service versions
-- **⚠️ CVE Correlation** — Maps open services to known vulnerabilities
-- **📄 Auto Report Generation** — TXT and JSON reports
-- **🎨 Color Terminal Output** — Easy-to-read real-time results
-- **🎯 Interactive & CLI Mode** — Flexible usage
+## Quick Start
 
-## 📸 Demo
+### Requirements
 
-```
- ███╗   ██╗███████╗████████╗    ███████╗███████╗███╗   ██╗████████╗██╗███╗   ██╗███████╗██╗
-     ...
+| Tool | Version |
+|---|---|
+| C++ Compiler | GCC 10+, Clang 12+, or MSVC 2022 |
+| CMake | 3.15+ |
+| Boost | 1.74+ (program_options, system, asio) |
 
-[*] Target    : 192.168.1.1 (192.168.1.1)
-[*] Port Range: 1 - 1024
-[*] Threads   : 100
-
-  [OPEN]  Port    22/tcp  SSH             SSH-2.0-OpenSSH_8.9p1
-  [OPEN]  Port    80/tcp  HTTP            HTTP/1.1 200 OK Server: Apache
-  [OPEN]  Port   443/tcp  HTTPS           No banner
-  [OPEN]  Port  3306/tcp  MySQL           [VULN]
-
-Progress: [████████████████████████████████████████] 1024/1024
-
-[+] Scan complete in 8.34s | 4 open port(s) found
-```
-
-## 🚀 Installation
+### Build & Run
 
 ```bash
-# Clone the repository
+# Clone the repo
 git clone https://github.com/deepmaha2006/NetSentinel.git
 cd NetSentinel
 
-# Install dependencies
-pip install -r requirements.txt
+# Create build directory
+mkdir build && cd build
 
-# Run scanner
-python scanner.py
+# Configure
+cmake ..
+
+# Build
+make -j4           # Linux/macOS
+# or: cmake --build .   # Windows
+
+# Run
+./NetSentinel -i 127.0.0.1 -p 1-1024
 ```
 
-## 💻 Usage
+### Windows (with vcpkg)
+```powershell
+# Install Boost via vcpkg
+vcpkg install boost-asio boost-program-options boost-system
 
-```bash
-# Interactive mode
-python scanner.py
-
-# Scan specific host (default port range 1-1024)
-python scanner.py 192.168.1.1
-
-# Scan with custom port range
-python scanner.py 192.168.1.1 1 65535
-
-# Full scan example
-python scanner.py scanme.nmap.org 1 1024
+# Configure with vcpkg toolchain
+cmake .. -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+cmake --build . --config Release
 ```
-
-## 📊 Output
-
-NetSentinel generates two report formats:
-
-**Text Report (`report_<target>_<timestamp>.txt`)**
-```
-======================================================================
-           NETSENTINEL - VULNERABILITY SCAN REPORT
-======================================================================
-Target Host  : 192.168.1.1
-IP Address   : 192.168.1.1
-Open Ports   : 4
-...
-  [!] VULNERABILITY: CVE-2012-2122 - Authentication bypass | Check for default credentials
-  Risk    : HIGH
-```
-
-**JSON Report** — Machine-readable format for integration with other tools
-
-## 🗂️ Project Structure
-
-```
-NetSentinel/
-├── scanner.py          # Main scanner module
-├── requirements.txt    # Python dependencies
-├── README.md           # Documentation
-└── reports/            # Auto-generated scan reports
-```
-
-## ⚠️ Legal Disclaimer
-
-> This tool is intended **only for authorized penetration testing and educational purposes**. Scanning systems without explicit permission is illegal. The author is not responsible for any misuse.
-
-## 👤 Author
-
-**Deepesh Kumar Mahawar**
-- GitHub: [@deepmaha2006](https://github.com/deepmaha2006)
-- Email: deepeshmahawar2006@gmail.com
 
 ---
 
-<div align="center">
-Made with ❤️ and Python | ⭐ Star this repo if you found it useful!
-</div>
+## Usage
+
+```
+Usage: NetSentinel [options]
+
+Options:
+  -h, --help          Show help message
+  -i, --dname         Target IP or domain  (default: 127.0.0.1)
+  -p, --ports         Port range N or N-M  (default: 1-1024)
+  -t, --threads       Max concurrent scans (default: 100)
+  -e, --expiry_time   Timeout in seconds   (default: 2)
+```
+
+### Examples
+
+```bash
+# Scan localhost common ports
+./NetSentinel -i 127.0.0.1 -p 1-1024
+
+# Full scan of a target
+./NetSentinel -i 192.168.1.1 -p 1-65535 -t 200
+
+# Slower, stealthier scan with long timeout
+./NetSentinel -i 10.0.0.5 -p 1-1024 -t 20 -e 5
+
+# Test against nmap's public demo host
+./NetSentinel -i scanme.nmap.org -p 1-1024 -t 50 -e 3
+
+# Scan only web ports
+./NetSentinel -i example.com -p 80-443 -e 3
+```
+
+### Sample Output
+
+```
+[*] Target   : scanme.nmap.org
+[*] Ports    : 1-1024
+[*] Threads  : 100
+[*] Timeout  : 2s
+
+PORT   STATE      SERVICE          BANNER
+----   -----      -------          ------
+22     OPEN       SSH              SSH-2.0-OpenSSH_6.6.1p1 Ubuntu...
+80     OPEN       HTTP             ---
+443    CLOSED     HTTPS            ---
+135    FILTERED   MSRPC            ---
+
+╔══════════════════════════════════╗
+║           Scan Summary           ║
+╠══════════════════════════════════╣
+║  Open:      2                   ║
+║  Closed:    998                 ║
+║  Filtered:  24                  ║
+╚══════════════════════════════════╝
+```
+
+---
+
+## Architecture
+
+```
+main.cpp
+  └── CLI parsing (Boost.Program_options)
+      └── PortScanner::set_options()
+          ├── parsePort()        - Parse "N" or "N-M" range
+          └── resolver.resolve() - DNS lookup
+              └── PortScanner::start()
+                  └── post MAX_THREADS scan() to strand
+                      └── scan() [recursive via strand]
+                          ├── async_connect → OPEN/CLOSED
+                          │     └── async_read_some → banner
+                          └── async_wait (timer) → FILTERED
+```
+
+---
+
+## Learn Modules
+
+Step-by-step walkthroughs are in the [`learn/`](learn/) directory:
+
+| Module | Topic |
+|--------|-------|
+| [00 - Overview](learn/00-OVERVIEW.md) | Prerequisites, quick start, project structure |
+| [01 - Concepts](learn/01-CONCEPTS.md) | Security theory: port states, banner grabbing, real attacks |
+| [02 - Architecture](learn/02-ARCHITECTURE.md) | Async I/O design, strand executor, data flow |
+| [03 - Implementation](learn/03-IMPLEMENTATION.md) | Code walkthrough, async patterns explained |
+| [04 - Challenges](learn/04-CHALLENGES.md) | Extension ideas: UDP, OS fingerprinting, stealth |
+
+---
+
+## ⚠️ Legal Notice
+
+> **Only scan systems you own or have explicit written permission to test.**
+> Unauthorized port scanning may be illegal in your jurisdiction and violates computer crime laws.
+> This tool is intended for educational purposes and authorized security testing only.
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE)
+
+---
+
+*Built by [deepmaha2006](https://github.com/deepmaha2006)*
